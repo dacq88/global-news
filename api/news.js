@@ -2,17 +2,17 @@ const https = require('https');
 const http = require('http');
 
 const FEEDS = [
-   { source: 'CNBC',      url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
+  { source: 'CNBC',      url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
   { source: 'CNBC',      url: 'https://www.cnbc.com/id/15839135/device/rss/rss.html' },
   { source: 'CNN',       url: 'http://rss.cnn.com/rss/edition.rss' },
   { source: 'CNN',       url: 'http://rss.cnn.com/rss/edition_business.rss' },
   { source: 'Bloomberg', url: 'https://feeds.bloomberg.com/markets/news.rss' },
   { source: 'Bloomberg', url: 'https://feeds.bloomberg.com/technology/news.rss' },
   { source: 'Reuters',   url: 'https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US&ceid=US:en' },
-  { source: 'AP',        url: 'https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en' },
   { source: 'BBC',       url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
   { source: 'BBC',       url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
   { source: 'WSJ',       url: 'https://news.google.com/rss/search?q=site:wsj.com&hl=en-US&gl=US&ceid=US:en' },
+  { source: 'AP',        url: 'https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en' },
 ];
 
 function fetchUrl(url) {
@@ -48,7 +48,11 @@ function cleanHtml(text) {
 
 function parseDate(str) {
   if (!str) return 0;
-  try { return Math.floor(new Date(str).getTime() / 1000); } catch { return 0; }
+  try {
+    const ts = new Date(str).getTime();
+    if (isNaN(ts) || ts > Date.now() + 86400000) return 0;
+    return Math.floor(ts / 1000);
+  } catch { return 0; }
 }
 
 function parseFeed(xml, source) {
@@ -67,14 +71,14 @@ function parseFeed(xml, source) {
       };
       const title = cleanHtml(get('title'));
       if (!title || title.length < 5) continue;
-      const desc = cleanHtml(get('description') || get('summary') || get('content')).slice(0, 250);
+      let desc = cleanHtml(get('description') || get('summary') || get('content')).slice(0, 250);
       let link = get('link') || '';
       if (!link) {
         const lm = block.match(/<link[^>]+href=["']([^"']+)["']/i);
         if (lm) link = lm[1];
       }
       const pub = get('pubDate') || get('published') || get('updated') || '';
-      results.push({ source, title, desc: cleanHtml(link ? desc : ''), link: cleanHtml(link), timestamp: parseDate(pub) });
+      results.push({ source, title, desc: cleanHtml(desc), link: cleanHtml(link), timestamp: parseDate(pub) });
       count++;
     }
   } catch(e) {}
