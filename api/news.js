@@ -8,11 +8,14 @@ const FEEDS = [
   { source: 'CNN',       url: 'http://rss.cnn.com/rss/edition_business.rss' },
   { source: 'Bloomberg', url: 'https://feeds.bloomberg.com/markets/news.rss' },
   { source: 'Bloomberg', url: 'https://feeds.bloomberg.com/technology/news.rss' },
-  { source: 'Reuters',   url: 'https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US&ceid=US:en' },
+  { source: 'Reuters',   url: 'https://feeds.reuters.com/reuters/topNews' },
+  { source: 'Reuters',   url: 'https://feeds.reuters.com/reuters/businessNews' },
   { source: 'BBC',       url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
   { source: 'BBC',       url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
-  { source: 'WSJ',       url: 'https://news.google.com/rss/search?q=site:wsj.com&hl=en-US&gl=US&ceid=US:en' },
-  { source: 'AP',        url: 'https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en' },
+  { source: 'WSJ',       url: 'https://feeds.a.dj.com/rss/RSSMarketsMain.xml' },
+  { source: 'WSJ',       url: 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml' },
+  { source: 'AP',        url: 'https://apnews.com/apf-topnews?format=rss' },
+  { source: 'AP',        url: 'https://apnews.com/apf-business?format=rss' },
 ];
 
 function fetchUrl(url) {
@@ -48,11 +51,7 @@ function cleanHtml(text) {
 
 function parseDate(str) {
   if (!str) return 0;
-  try {
-    const ts = new Date(str).getTime();
-    if (isNaN(ts) || ts > Date.now() + 86400000) return 0;
-    return Math.floor(ts / 1000);
-  } catch { return 0; }
+  try { return Math.floor(new Date(str).getTime() / 1000); } catch { return 0; }
 }
 
 function parseFeed(xml, source) {
