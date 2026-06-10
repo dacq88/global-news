@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global News</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--border:rgba(255,255,255,0.08);--text:#f0f0f5;--text2:#9999b0;--text3:#666680;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
+  .logo{font-size:16px;font-weight:700;}.logo span{color:#5566ff;}
+  .hr{display:flex;align-items:center;gap:12px;}
+  #lu{font-size:12px;color:var(--text3);}
+  #rb{background:rgba(85,102,255,0.15);border:1px solid rgba(85,102,255,0.3);color:#7788ff;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;transition:all 0.15s;}
+  #rb:hover{background:rgba(85,102,255,0.25);}#rb:disabled{opacity:0.5;cursor:not-allowed;}
+  .fb{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;}
+  .fb::-webkit-scrollbar{display:none;}
+  .btn{background:none;border:none;color:var(--text3);font-size:13px;font-weight:500;padding:12px 14px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.15s;display:flex;align-items:center;gap:6px;}
+  .btn:hover{color:var(--text2);}.btn.active{color:var(--text);border-bottom-color:#5566ff;}
+  .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  main{max-width:900px;margin:0 auto;padding:20px 24px 48px;}
+  .sb{font-size:12px;color:var(--text3);margin-bottom:16px;}
+  .grid{display:flex;flex-direction:column;gap:1px;background:var(--border);border-radius:10px;overflow:hidden;}
+  .item{background:var(--bg2);padding:18px 20px;transition:background 0.1s;display:flex;gap:16px;align-items:flex-start;}
+  .item:hover{background:var(--bg3);}
+  .item:first-child{border-radius:10px 10px 0 0;}.item:last-child{border-radius:0 0 10px 10px;}
+  .badge{flex-shrink:0;width:80px;padding:3px 0;text-align:center;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:0.3px;margin-top:2px;}
+  .nc{flex:1;min-width:0;}
+  .nt{font-size:15px;font-weight:500;line-height:1.45;color:var(--text);margin-bottom:6px;word-break:keep-all;}
+  .nd{font-size:13px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;}
+  .nm{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text3);}
+  .sp{opacity:0.4;}
+  .nl{font-size:11px;color:#5566ff;text-decoration:none;opacity:0.7;flex-shrink:0;align-self:center;padding:4px 8px;border:1px solid rgba(85,102,255,0.2);border-radius:4px;white-space:nowrap;transition:all 0.15s;}
+  .nl:hover{opacity:1;background:rgba(85,102,255,0.1);}
+  .ph{text-align:center;padding:60px 24px;color:var(--text3);}
+  .ph h3{font-size:15px;color:var(--text2);margin-bottom:8px;font-weight:500;}
+  .ph p{font-size:13px;line-height:1.7;}
+  @keyframes shimmer{0%,100%{opacity:.4}50%{opacity:.8}}
+  .sk{background:var(--bg3);border-radius:4px;animation:shimmer 1.4s ease-in-out infinite;}
+  .sr{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;gap:16px;}
+  .sr:last-child{border-bottom:none;}
+  @media(max-width:600px){header,.fb{padding-left:16px;padding-right:16px;}main{padding:14px 16px 48px;}.item{padding:14px 16px;}.badge{width:64px;font-size:10px;}.nt{font-size:14px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Global<span>News</span></div>
+  <div class="hr"><span id="lu"></span><button id="rb" onclick="load()">↻ 새로고침</button></div>
+</header>
+<div class="fb">
+  <button class="btn active" onclick="filt('all')" data-s="all">전체</button>
+  <button class="btn" onclick="filt('CNBC')" data-s="CNBC"><span class="dot" style="background:#0066cc"></span>CNBC</button>
+  <button class="btn" onclick="filt('CNN')" data-s="CNN"><span class="dot" style="background:#cc0000"></span>CNN</button>
+  <button class="btn" onclick="filt('Bloomberg')" data-s="Bloomberg"><span class="dot" style="background:#ff6600"></span>Bloomberg</button>
+  <button class="btn" onclick="filt('Reuters')" data-s="Reuters"><span class="dot" style="background:#ff8200"></span>Reuters</button>
+  <button class="btn" onclick="filt('BBC')" data-s="BBC"><span class="dot" style="background:#bb1919"></span>BBC</button>
+  <button class="btn" onclick="filt('WSJ')" data-s="WSJ"><span class="dot" style="background:#0274b6"></span>WSJ</button>
+  <button class="btn" onclick="filt('AP')" data-s="AP"><span class="dot" style="background:#8800cc"></span>AP</button>
+</div>
+<main>
+  <div class="sb"><span id="st">뉴스를 불러오는 중...</span></div>
+  <div id="con"></div>
+</main>
+<script>
+const ST={CNBC:{c:'#a8c8ff',b:'rgba(0,102,204,0.18)'},CNN:{c:'#ffaaaa',b:'rgba(204,0,0,0.18)'},Bloomberg:{c:'#ffcc99',b:'rgba(255,102,0,0.18)'},Reuters:{c:'#ffcc88',b:'rgba(255,130,0,0.18)'},BBC:{c:'#ffaaaa',b:'rgba(187,25,25,0.18)'},WSJ:{c:'#99ccee',b:'rgba(2,116,182,0.18)'},AP:{c:'#ddaaff',b:'rgba(136,0,204,0.18)'}};
+let all=[],cur='all';
+function ago(ts){if(!ts)return'';const m=Math.floor((Date.now()/1000-ts)/60);if(m<1)return'방금 전';if(m<60)return m+'분 전';const h=Math.floor(m/60);if(h<24)return h+'시간 전';return Math.floor(h/24)+'일 전';}
+function e(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function skel(){const r=Array.from({length:10},(_,i)=>`<div class="sr"><div class="sk" style="width:80px;height:22px;flex-shrink:0;margin-top:2px"></div><div style="flex:1"><div class="sk" style="height:15px;width:${65+(i%3)*10}%;margin-bottom:8px"></div><div class="sk" style="height:13px;width:90%;margin-bottom:4px"></div><div class="sk" style="height:13px;width:${55+(i%2)*20}%"></div></div></div>`).join('');document.getElementById('con').innerHTML=`<div style="background:var(--bg2);border-radius:10px;overflow:hidden">${r}</div>`;}
+function render(items){
+  if(!items.length){document.getElementById('con').innerHTML='<div class="ph"><h3>기사가 없습니다</h3></div>';return;}
+  const h=items.map(n=>{const s=ST[n.source]||{c:'#ccc',b:'rgba(128,128,128,0.15)'};return`<div class="item"><div class="badge" style="background:${s.b};color:${s.c}">${e(n.source)}</div><div class="nc"><div class="nt">${e(n.title)}</div>${n.desc?`<div class="nd">${e(n.desc)}</div>`:''}<div class="nm"><span>${e(n.source)}</span>${n.timestamp?`<span class="sp">·</span><span>${ago(n.timestamp)}</span>`:''}</div></div>${n.link?`<a class="nl" href="${e(n.link)}" target="_blank" rel="noopener">원문 →</a>`:''}</div>`;}).join('');
+  document.getElementById('con').innerHTML=`<div class="grid">${h}</div>`;
+}
+function filt(src){cur=src;document.querySelectorAll('.btn').forEach(b=>b.classList.toggle('active',b.dataset.s===src));const f=src==='all'?all:all.filter(n=>n.source===src);document.getElementById('st').textContent=`${f.length}개 기사${src!=='all'?' · '+src:''}`;render(f);}
+async function load(){
+  const btn=document.getElementById('rb');btn.disabled=true;btn.textContent='⏳ 로딩 중...';
+  skel();document.getElementById('st').textContent='뉴스 수집 중...';
+  try{
+    const res=await fetch('/api/news');if(!res.ok)throw new Error();
+    all=await res.json();
+    const now=new Date();document.getElementById('lu').textContent=now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 업데이트';
+    filt(cur);
+  }catch{document.getElementById('con').innerHTML='<div class="ph"><h3>뉴스를 불러오지 못했습니다</h3><p>잠시 후 새로고침 해주세요</p></div>';document.getElementById('st').textContent='오류';}
+  btn.disabled=false;btn.textContent='↻ 새로고침';
+}
+load();setInterval(load,15*60*1000);
+</script>
+</body>
+</html>
