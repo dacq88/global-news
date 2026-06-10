@@ -2,20 +2,17 @@ const https = require('https');
 const http = require('http');
 
 const FEEDS = [
-  { source: 'CNBC',      url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
+   { source: 'CNBC',      url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
   { source: 'CNBC',      url: 'https://www.cnbc.com/id/15839135/device/rss/rss.html' },
   { source: 'CNN',       url: 'http://rss.cnn.com/rss/edition.rss' },
   { source: 'CNN',       url: 'http://rss.cnn.com/rss/edition_business.rss' },
   { source: 'Bloomberg', url: 'https://feeds.bloomberg.com/markets/news.rss' },
   { source: 'Bloomberg', url: 'https://feeds.bloomberg.com/technology/news.rss' },
-  { source: 'Reuters',   url: 'https://feeds.reuters.com/reuters/topNews' },
-  { source: 'Reuters',   url: 'https://feeds.reuters.com/reuters/businessNews' },
+  { source: 'Reuters',   url: 'https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US&ceid=US:en' },
+  { source: 'AP',        url: 'https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en' },
   { source: 'BBC',       url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
   { source: 'BBC',       url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
-  { source: 'WSJ',       url: 'https://feeds.a.dj.com/rss/RSSMarketsMain.xml' },
-  { source: 'WSJ',       url: 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml' },
-  { source: 'AP',        url: 'https://apnews.com/apf-topnews?format=rss' },
-  { source: 'AP',        url: 'https://apnews.com/apf-business?format=rss' },
+  { source: 'WSJ',       url: 'https://news.google.com/rss/search?q=site:wsj.com&hl=en-US&gl=US&ceid=US:en' },
 ];
 
 function fetchUrl(url) {
